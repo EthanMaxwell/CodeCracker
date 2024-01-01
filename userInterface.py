@@ -5,7 +5,7 @@ from tkinter import font as tkFont
 def startUserInterface(words, starting_letters, all_letters):
     def on_validate(P):
         # P is the proposed text to be inserted
-        if len(P) == 0 or P.upper() in all_letters:
+        if len(P) == 0 or P[-1].upper() in all_letters:
             return True
         else:
             return False
@@ -27,8 +27,11 @@ def startUserInterface(words, starting_letters, all_letters):
     def on_entry_change(*args):
         for var in entry_vars:
             char = var.get()
-            if len(char) > 0 and char.islower():
-                var.set(char.upper())
+            if len(char) == 0:
+                continue
+            
+            if len(char) > 1 or char.islower():
+                var.set(char[-1].upper())
     
         entries_text = ""
         for word in random_words:
