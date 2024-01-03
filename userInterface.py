@@ -48,9 +48,17 @@ def startUserInterface(words, starting_letters, all_letters):
         text_widget.config(state=tk.NORMAL)  # Enable editing temporarily
         text_widget.delete(1.0, tk.END)  # Clear existing text
         text_widget.insert(tk.END, entries_text)
+        bold_non_numbers(text_widget)
         text_widget.config(state=tk.DISABLED)  # Disable editing again
         
-        bold_non_numbers(text_widget)
+        for label in bottom_labels.values():
+            label.config(font=("Courier", 20, "bold"))
+            
+        for entry_var in entry_vars:
+            enter = entry_var.get()
+            if len(enter) > 0:
+                bottom_labels[enter].config(font=("Courier", 20))
+        
     
     def move_focus(event):
         current_widget = app.focus_get()
@@ -98,7 +106,17 @@ def startUserInterface(words, starting_letters, all_letters):
 
         # Create a read-only text widget on the right side
         text_widget = tk.Text(app, wrap=tk.WORD, width=75, height=word_num * 3, state=tk.DISABLED, font=num_font)
-        text_widget.grid(row=0, column=num_boxes // num_rows * 2 + 1, rowspan=num_rows, padx=10, pady=10)
+        text_widget.grid(row=0, column=num_boxes // num_rows * 2 + 1, rowspan=num_rows, columnspan=num_boxes, padx=10, pady=10)
+
+        # Create a row of labels along the bottom
+        letters_sorted = list(all_letters)
+        letters_sorted.sort()
+        bottom_labels = {}
+        for i in range(num_boxes):
+            bottom_label = tk.Label(app, text=letters_sorted[i])
+            bottom_label.grid(row=num_rows + 1, column=num_boxes // num_rows * 2 + 1 + i , pady=5, sticky="e")
+            bottom_labels[letters_sorted[i]] = bottom_label
+
 
         # Bind arrow keys to move focus
         for entry_widget in entry_widgets:
@@ -107,14 +125,13 @@ def startUserInterface(words, starting_letters, all_letters):
             entry_widget.bind("<Up>", move_focus)
             entry_widget.bind("<Down>", move_focus)
 
-        return app, entry_vars, text_widget, entry_widgets
-
+        return app, entry_vars, text_widget, entry_widgets, bottom_labels
 
     char_num = len(all_letters)
     random_letters = random.sample(list(all_letters), len(all_letters))
     random_words = random.sample(words, len(words))
 
-    app, entry_vars, text_widget, entry_widgets = create_interface(char_num, len(words))
+    app, entry_vars, text_widget, entry_widgets, bottom_labels = create_interface(char_num, len(words))
     
     # Fill starting letters
     for letter in starting_letters:
