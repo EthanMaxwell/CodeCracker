@@ -1,6 +1,6 @@
 import random
 
-def makePuzzle(file_path):
+def makePuzzle(file_path, extra_words=0):
     # Read the words from the file into a set
     with open(file_path, 'r') as file:
         all_words = [word.strip().upper() for word in file]
@@ -61,6 +61,14 @@ def makePuzzle(file_path):
         known_letters.update({char for char in new_word})
         words.append(new_word)
         
-    starting_letters = {starting_word[i] for i in starting_poses}  
+    starting_letters = {starting_word[i] for i in starting_poses}
+    
+    add_words = []
+    while len(add_words) < extra_words:
+        new_word = random.choice(all_words)
+        if not any(char in new_word for char in starting_letters):
+            add_words.append(new_word)
+    
+    words += add_words
         
     return words, starting_letters, known_letters
