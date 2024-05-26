@@ -5,7 +5,7 @@ a = Analysis(
     ['main.py', 'userInterface.py', 'textInterface.py', 'puzzleMaker.py'],
     pathex=[],
     binaries=[],
-    datas=[('./wordLists/5000-more-common.txt', '.')],
+    datas=[('wordLists', '.')],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
